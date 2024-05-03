@@ -218,6 +218,12 @@ class Game:
                     choice = str(input()).strip()
 
                 self.algorithm_chosen = self.algorithms[int(choice) - 1]
+            elif responce == '1':
+                with open('game_data.json', 'r', encoding='utf-8') as file:
+                    i = 0
+                    for line in file:
+                        i += 1
+                        print(i, ' : ', line)
 
             elif responce == '3':
 
