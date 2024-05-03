@@ -337,9 +337,10 @@ class Game:
             "moves_played": self.moves,
             "winner": winner,
             "player_Score": self.ph.score,
-            "computer_Score": self.pc.score,
+            "computer_Score": self.pc.score
         }
-        with open("game_data.json", "w") as json_file:
-             json.dump(game_data, json_file)
+        with open("game_data.json", "a") as json_file:
+            json.dump(game_data, json_file)
+            json_file.write("\n")
 
         exit()
