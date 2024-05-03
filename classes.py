@@ -23,6 +23,11 @@ def get_accepted_words() -> dict:
 
     return words
 
+def check_word(choice) -> bool:
+    for word in get_accepted_words():
+        if choice == word:
+            return True
+    return False
 
 class SakClass:
     accepted_words = get_accepted_words()
@@ -49,10 +54,6 @@ class SakClass:
         letters = choices([letter for letter in self.lets.keys() if self.lets[letter][0] > 0], k=num_of_letters)
 
         self.letters_left -= num_of_letters
-
-        # sample -> Choose k unique random elements from a sequence.
-
-        # choices -> Return a k sized list of population elements chosen with replacement.
 
         for letter in letters:
             self.lets[letter][0] -= 1
@@ -263,14 +264,16 @@ class Game:
                 if not self.ph.check_word_letters(choice):
                     print('Η ΛΈΞΗ ΠΕΡΙΕΧΕΙ ΧΑΡΑΚΤΉΡΕΣ ΠΟΥ ΔΕΝ ΒΡΙΣΚΟΝΤΑΙ ΣΤΗΝ ΚΑΤΟΧΗ ΣΟΥ!!')
                     continue
+                if check_word(choice) == False:
+                    print('ΜΗ ΑΠΟΔΕΚΤΗ ΛΕΞΗ. ΧΑΝΕΙΣ ΤΗ ΣΕΙΡΑ ΣΟΥ')
 
-                # if not self.sak.is_accepted_word(response):
-                #     print('ΜΗ ΑΠΟΔΕΚΤΗ ΛΕΞΗ!!')
-                #     continue
+                    turn = 1
+
+                    continue
+
 
                 self.ph.print_word_choice_details(choice, self.sak.calculate_value(choice), self.sak)
 
-                #self.ph.letters = [letter for letter in self.ph.letters if letter not in choice]
 
                 for letter in choice:
                     counter = choice.count(letter)
@@ -310,7 +313,6 @@ class Game:
 
                 self.pc.print_word_choice_details(choice, self.sak.calculate_value(choice), self.sak)
 
-                #self.pc.letters = [letter for letter in self.pc.letters if letter not in choice]
                 for letter in choice:
                     counter = choice.count(letter)
                     counter1 = self.pc.letters.count(letter)
