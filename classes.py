@@ -1,3 +1,4 @@
+import json
 from random import choices
 from itertools import permutations
 
@@ -184,6 +185,7 @@ class Game:
         self.pc = Computer("Η/Υ")
         self.sak = SakClass()
         self.algorithm_chosen = None
+        self.moves = 0
 
         self.setup()
 
@@ -200,7 +202,7 @@ class Game:
 
             while int(responce) not in range(1, 4) and responce != 'q':
 
-                print("ΜΗ ΕΠΙΤΡΕΠΤΗ ΕΠΙΛΟΓΗ, ΕΠΕΛΕΞΕ ΞΑΝΑ")
+                print("ΜΗ ΕΠΙΤΡΕΠΤΗ ΕΠΙΛΟΓΗ, ΕΠΙΛΕΞΕ ΞΑΝΑ")
                 responce = str(input()).strip()
 
             if responce == '2':
@@ -212,7 +214,7 @@ class Game:
 
                 while int(choice) not in range(1, 4):
 
-                    print("ΜΗ ΕΠΙΤΡΕΠΤΗ ΕΠΙΛΟΓΗ, ΕΠΕΛΕΞΕ ΞΑΝΑ")
+                    print("ΜΗ ΕΠΙΤΡΕΠΤΗ ΕΠΙΛΟΓΗ, ΕΠΙΛΕΞΕ ΞΑΝΑ")
                     choice = str(input()).strip()
 
                 self.algorithm_chosen = self.algorithms[int(choice) - 1]
@@ -231,9 +233,8 @@ class Game:
     def run(self):
         # turn == 0 -> player, turn == 1 -> computer
         turn = 0
-
         while True:
-
+            self.moves += 1
             if turn == 0:
 
                 self.ph.print_general_details()
@@ -241,8 +242,8 @@ class Game:
                 print("ΛΕΞΗ: ", end='')
 
                 choice = str(input()).upper().strip()
-
-                if choice.lower().strip() == 'p':
+                choicee = choice.lower()
+                if choicee == 'p':
 
                     self.sak.return_letters(self.ph.letters)
 
@@ -251,7 +252,8 @@ class Game:
                     turn = 1
 
                     continue
-
+                if choicee == 'q':
+                    self.end()
                 if not self.ph.check_word_letters(choice):
                     print('Η ΛΈΞΗ ΠΕΡΙΕΧΕΙ ΧΑΡΑΚΤΉΡΕΣ ΠΟΥ ΔΕΝ ΒΡΙΣΚΟΝΤΑΙ ΣΤΗΝ ΚΑΤΟΧΗ ΣΟΥ!!')
                     continue
@@ -262,9 +264,19 @@ class Game:
 
                 self.ph.print_word_choice_details(choice, self.sak.calculate_value(choice), self.sak)
 
-                self.ph.letters = [letter for letter in self.ph.letters if letter not in choice]
+                #self.ph.letters = [letter for letter in self.ph.letters if letter not in choice]
+
+                for letter in choice:
+                    counter = choice.count(letter)
+                    counter1 = self.ph.letters.count(letter)
+                    self.ph.letters.remove(letter)
+                    while counter < counter1 -1:
+                        self.ph.letters.append(letter)
+                        counter += 1
 
                 self.ph.add_letters(self.sak.get_letters(len(choice)))
+                if len(self.ph.letters) < 7:
+                    self.end()
 
                 turn = 1
 
@@ -292,11 +304,34 @@ class Game:
 
                 self.pc.print_word_choice_details(choice, self.sak.calculate_value(choice), self.sak)
 
-                self.pc.letters = [letter for letter in self.pc.letters if letter not in choice]
+                #self.pc.letters = [letter for letter in self.pc.letters if letter not in choice]
+                for letter in choice:
+                    counter = choice.count(letter)
+                    counter1 = self.pc.letters.count(letter)
+                    self.pc.letters.remove(letter)
+                    while counter < counter1 - 1:
+                        self.pc.letters.append(letter)
+                        counter += 1
 
                 self.pc.add_letters(self.sak.get_letters(len(choice)))
+                if len(self.pc.letters)<7:
+                    self.end()
 
                 turn = 0
 
     def end(self):
-        pass
+        winner = "Player" if self.ph.score > self.pc.score else "Computer"
+
+        print(f"Player Score: {self.ph.score}, Computer Score: {self.pc.score}")
+        print("Moves played:", self.moves)
+
+        game_data = {
+            "moves_played": self.moves,
+            "winner": winner,
+            "player_Score": self.ph.score,
+            "computer_Score": self.pc.score,
+        }
+        with open("game_data.json", "w") as json_file:
+             json.dump(game_data, json_file)
+
+        exit()
