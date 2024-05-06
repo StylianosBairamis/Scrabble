@@ -10,7 +10,26 @@ from itertools import permutations
 
 # python magic methods start and end with __, also called dunder methods. They are defined by build in classes
 
+def guidelines():
+    """
+    Εμφανίζει τις οδηγίες και την τεκμηρίωση για το παιχνίδι Scrabble.
+
+    Usage:
+        help(guidelines)
+    """
+    pass
+# Καλώντας τη συνάρτηση guidelines, θα εμφανιστούν οι οδηγίες σου μέσω του help()
+    guidelines.__doc__ = f"""Οδηγίες και τεκμηρίωση για το παιχνίδι Scrabble.
+Χρησιμοποίησε `help(guidelines)` για να δεις αυτό το μήνυμα.
+"""
+help(guidelines)
 def get_accepted_words() -> dict:
+    """
+        Επιστρέφει ένα λεξικό με τις αποδεκτές λέξεις από το αρχείο "greek7.txt".
+
+        Returns:
+        dict: Το λεξικό με τις αποδεκτές λέξεις.
+        """
     words = {}  # Χρησιμοποιώ ενα dictionary γιατί υλοποιείται μέσω ενός πίνακα κατακερματισμού,
     # δηλαδή η πολυπλοκότητα για το search μια λέξης εΟ(1) (σταθερός χρόνος), πράγμα πολύ γρήγορο απο το αντίστοιχο
     # search σε λίστα
@@ -24,12 +43,30 @@ def get_accepted_words() -> dict:
     return words
 
 def check_word(choice) -> bool:
+    """
+        Έλεγχος εάν η λέξη `choice` είναι αποδεκτή.
+
+        Args:
+        choice (str): Η λέξη προς έλεγχο.
+
+        Returns:
+        bool: Επιστρέφει True αν η λέξη είναι αποδεκτή, αλλιώς False.
+        """
+
     for word in get_accepted_words():
         if choice == word:
             return True
     return False
 
 class SakClass:
+    """
+        Η κλάση SakClass αναπαριστά το σακουλάκι με τα γράμματα και τις απαραίτητες λειτουργίες.
+
+        Attributes:
+        accepted_words (dict): Το λεξικό με τις αποδεκτές λέξεις.
+        lets (dict): Το λεξικό με τα γράμματα και τις τιμές τους.
+        letters_left (int): Το πλήθος των γραμμάτων που απομένουν στο σακουλάκι.
+        """
     accepted_words = get_accepted_words()
 
     def __init__(self):
@@ -43,6 +80,15 @@ class SakClass:
         self.letters_left = sum([self.lets[key][0] for key in self.lets.keys()])
 
     def get_letters(self, N):
+        """
+                Επιστρέφει τυχαία γράμματα από το σακουλάκι.
+
+                Args:
+                N (int): Το πλήθος των γραμμάτων που θέλουμε να επιστραφούν.
+
+                Returns:
+                list: Μια λίστα με τα τυχαία επιλεγμένα γράμματα.
+                """
 
         if self.letters_left < N:
 
@@ -61,21 +107,56 @@ class SakClass:
         return letters
 
     def return_letters(self, letters):
+        """
+                Επιστρέφει γράμματα στο σακουλάκι.
+
+                Args:
+                letters (list): Η λίστα με τα γράμματα προς επιστροφή στο σακουλάκι.
+
+                Returns:
+                None
+                """
         for letter in letters:
             self.lets[letter][0] += 1
 
     def is_accepted_word(self, word) -> bool:
+        """
+                Έλεγχος εάν μια λέξη είναι αποδεκτή.
+
+                Args:
+                word (str): Η λέξη προς έλεγχο.
+
+                Returns:
+                bool: Επιστρέφει True αν η λέξη είναι αποδεκτή, αλλιώς False.
+                """
 
         result = self.accepted_words.get(word, '404')
 
         return result != '404'
 
     def calculate_value(self, word):
+        """
+                Υπολογίζει την αξία μιας λέξης βάσει των γραμμάτων της.
+
+                Args:
+                word (str): Η λέξη για την οποία θα υπολογιστεί η αξία.
+
+                Returns:
+                int: Η αξία της λέξης.
+                """
 
         return sum([self.lets[letter][0] for letter in word])
 
 
 class Player:
+    """
+       Η γενική κλάση για τους παίκτες του παιχνιδιού.
+
+       Attributes:
+       name (str): Το όνομα του παίκτη.
+       score (int): Οι βαθμοί του παίκτη.
+       letters (list): Τα γράμματα που διαθέτει ο παίκτης.
+       """
 
     def __init__(self, name):
         self.name = name
@@ -114,6 +195,12 @@ class Player:
 
 
 class Human(Player):
+    """
+       Η υποκλάση Human αναπαριστά τον ανθρώπινο παίκτη.
+
+       Methods:
+       algorithm_smart: Έξυπνος αλγόριθμος για την ενημέρωση του παίκτη για την καλύτερη δυνατή απάντηση που θα μπορούσε να δώσει .
+       """
 
     def algorithm_smart(self, sak):
         max_value = -999
@@ -144,6 +231,14 @@ class Human(Player):
 
 
 class Computer(Player):
+    """
+        Η υποκλάση Computer αναπαριστά τον υπολογιστή.
+
+        Methods:
+        algorithm_min: Αλγόριθμος που επιλέγει τη μικρότερη δυνατή λέξη.
+        algorithm_max: Αλγόριθμος που επιλέγει τη μεγαλύτερη δυνατή λέξη.
+        algorithm_smart: Ένας έξυπνος αλγόριθμος που επιλέγει τη βέλτιστη λέξη για να παίξει ο υπολογιστής.
+        """
 
     def calculate_permutations(self, num_of_letters):
         return permutations(self.letters, num_of_letters)
@@ -204,6 +299,16 @@ class Computer(Player):
 
 
 class Game:
+    """
+       Η κλάση Game αναπαριστά το παιχνίδι Scrabble.
+
+       Attributes:
+       ph (Human): Ο ανθρώπινος παίκτης.
+       pc (Computer): Ο υπολογιστής.
+       sak (SakClass): Το σακουλάκι με τα γράμματα.
+       algorithm_chosen (str): Ο αλγόριθμος που επιλέγεται για τον υπολογιστή.
+       moves (int): Ο αριθμός των γύρων που έχουν παιχτεί.
+       """
 
     algorithms = ['MIN', 'MAX', 'SMART', 'SMART_TEACH']
 
@@ -217,6 +322,7 @@ class Game:
         self.setup()
 
     def setup(self):
+        """Ρυθμίζει τις αρχικές παραμέτρους του παιχνιδιού."""
 
         while True:
 
@@ -357,6 +463,8 @@ class Game:
                 turn = 0
 
     def end(self):
+        """Ολοκληρώνει το παιχνίδι και αποθηκεύει τα αποτελέσματα."""
+
         winner = "Player" if self.ph.score > self.pc.score else "Computer"
 
         print(f"Player Score: {self.ph.score}, Computer Score: {self.pc.score}")
