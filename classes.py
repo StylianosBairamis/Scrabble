@@ -114,7 +114,33 @@ class Player:
 
 
 class Human(Player):
-    pass
+
+    def algorithm_smart(self, sak):
+        max_value = -999
+
+        best_permutation = None
+
+        for i in range(2, 8):
+
+            i_permutations = self.calculate_permutations(i)
+
+            for permutation in i_permutations:
+
+                permutation = ''.join(permutation)
+
+                if sak.is_accepted_word(permutation):
+
+                    current_value = sak.calculate_value(permutation)
+
+                    if current_value > max_value:
+                        max_value = current_value
+
+                        best_permutation = permutation
+
+            return best_permutation
+
+    def calculate_permutations(self, num_of_letters):
+        return permutations(self.letters, num_of_letters)
 
 
 class Computer(Player):
@@ -179,7 +205,7 @@ class Computer(Player):
 
 class Game:
 
-    algorithms = ['MIN', 'MAX', 'SMART']
+    algorithms = ['MIN', 'MAX', 'SMART', 'SMART_TEACH']
 
     def __init__(self):
         self.ph = Human("ΣΤΕΛΙΟΣ")
@@ -208,12 +234,12 @@ class Game:
 
             if responce == '2':
 
-                values = ['ΔΙΑΛΕΞΕ ΕΝΑΝ ΑΛΓΟΡΙΘΜΟ: ', '1: MIN', '2: MAX', '3: SMART']
+                values = ['ΔΙΑΛΕΞΕ ΕΝΑΝ ΑΛΓΟΡΙΘΜΟ: ', '1: MIN', '2: MAX', '3: SMART', '4: SMART_TEACH']
                 print(*values, sep='\n')
 
                 choice = str(input()).strip()
 
-                while int(choice) not in range(1, 4):
+                while int(choice) not in range(1, 5):
 
                     print("ΜΗ ΕΠΙΤΡΕΠΤΗ ΕΠΙΛΟΓΗ, ΕΠΙΛΕΞΕ ΞΑΝΑ")
                     choice = str(input()).strip()
@@ -224,7 +250,7 @@ class Game:
                     i = 0
                     for line in file:
                         i += 1
-                        print(i, ' : ', line)
+                        print(i, ': ', line)
 
             elif responce == '3':
 
@@ -273,6 +299,9 @@ class Game:
 
 
                 self.ph.print_word_choice_details(choice, self.sak.calculate_value(choice), self.sak)
+                if self.algorithm_chosen == 'SMART_TEACH':
+                    pc_choice = self.ph.algorithm_smart(self.sak)
+                    print('Η ΛΕΞΗ ΜΕ ΤΗΝ ΒΕΛΤΙΣΤΗ ΑΠΟΔΟΣΗ ΕΙΝΑΙ:', pc_choice)
 
 
                 for letter in choice:
