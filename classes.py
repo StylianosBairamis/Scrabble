@@ -6,7 +6,8 @@ from itertools import permutations
 
 def guidelines():
     """
-    Οδηγίες για το παιχνίδι Srabble
+    Οδηγίες για το παιχνίδι Srabble:
+
 
     1. Κλάσεις υλοποιημένες:
        - SakClass: Αναπαριστά το σακουλάκι με τα γράμματα και τις λειτουργίες του.
@@ -25,9 +26,16 @@ def guidelines():
 
     4. Δομή Δεδομένων:
        - Οι λέξεις της γλώσσας οργανώνονται σε λεξικό (dictionary) μέσω της κλάσης SakClass.
+       Όταν ο χρήστης ή ο υπολογιστής δώσουν μια λέξη ως απάντηση, αυτή ελέγχεται μέσω της is_accepted_word η οποία με
+       τη σειρά της καλεί την accepted_words.get(word) (dictionary). Αν η λέξη είναι αποδεκτή, υπολογίζεται η αξία της
+       μέσω της calculate_value. Χρησιμοποιείται ενα dictionary γιατί υλοποιείται μέσω ενός πίνακα κατακερματισμού,
+       δηλαδή η πολυπλοκότητα για το search μια λέξης εΟ(1) (σταθερός χρόνος), πράγμα πολύ γρήγορο απο το αντίστοιχο
+       search σε λίστα
 
     5. Αλγόριθμος Η/Υ:
        - Ο υπολογιστής υλοποιεί τους αλγόριθμους ΜΙΝ, ΜΑΧ, SMART καθώς και τον αλγόριθμο SMART_TEACH.
+
+    Ο κώδικας περιέχει εκτενή σχόλια στις κλάσεις και τις μεθόδους του.
     """
     pass
 
@@ -293,7 +301,7 @@ class Game:
 
             responce = str(input()).strip()
 
-            while responce not in range(1, 4) and responce != 'q': #TODO: FIX THIS0
+            while responce != '1' and responce != '2' and responce != '3' and responce != 'q':
                 print("ΜΗ ΕΠΙΤΡΕΠΤΗ ΕΠΙΛΟΓΗ, ΕΠΙΛΕΞΕ ΞΑΝΑ")
                 responce = str(input()).strip()
 
@@ -313,15 +321,14 @@ class Game:
             elif responce == '1':
 
                 try:
-                    with open('game_data.json', 'r', encoding='utf-8') as json_file:
-                        games_data = json.load(json_file)
-
-                        for game in games_data:
-                            print(game)
-
+                    with open('games.json', 'r', encoding='utf-8') as json_file:
+                        content = json_file.read()
+                        json_objs = content.split(',')
+                        for obj in json_objs:
+                            print(obj)
                 # Code to read the file goes here
                 except FileNotFoundError:
-                    print("The 'game_data.json' file does not exist. Please create it or check the file path.")
+                    print("The 'games.json' file does not exist. Please create it or check the file path.")
 
             elif responce == '3':
 
@@ -355,7 +362,7 @@ class Game:
 
                     continue
 
-                if choice == 'q':
+                if choice == 'Q':
                     self.end()
                 if not self.ph.check_word_letters(choice):
                     print('Η ΛΈΞΗ ΠΕΡΙΕΧΕΙ ΧΑΡΑΚΤΉΡΕΣ ΠΟΥ ΔΕΝ ΒΡΙΣΚΟΝΤΑΙ ΣΤΗΝ ΚΑΤΟΧΗ ΣΟΥ!!')
