@@ -38,6 +38,8 @@ def guidelines():
     pass
 
 
-sak = SakClass()
+if __name__ == "__main__":
+    guidelines()
 
-game = Game()
+    sak = SakClass()
+    game = Game()
