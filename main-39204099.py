@@ -39,7 +39,16 @@ def guidelines():
 
 
 if __name__ == "__main__":
-    guidelines()
+    response = str(input("Καλωσήρθατε! Πληκτρολογήστε help(guidelines) για εμφάνιση οδηγιών ή run για Έναρξη του παιχνιδιού\n"))
+    while response != 'help(guidelines)' and response != 'run':
+        print("ΜΗ ΕΠΙΤΡΕΠΤΗ ΕΠΙΛΟΓΗ, ΕΠΙΛΕΞΕ ΞΑΝΑ")
+        response = input()
 
-    sak = SakClass()
-    game = Game()
+    if response == "help(guidelines)":
+        guidelines()
+        input("Πατήστε οποιοδήποτε πλήκτρο για συνέχεια στο παιχνίδι:")
+        sak = SakClass()
+        game = Game()
+    elif response == "run":
+        sak = SakClass()
+        game = Game()
