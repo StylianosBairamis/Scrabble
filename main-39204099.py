@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
     if response == "help(guidelines)":
         guidelines()
-        input("Πατήστε οποιοδήποτε πλήκτρο για συνέχεια στο παιχνίδι:")
+        input("Πατήστε enter για συνέχεια στο παιχνίδι:")
         sak = SakClass()
         game = Game()
     elif response == "run":
